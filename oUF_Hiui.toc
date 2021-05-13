@@ -1,0 +1,17 @@
+## Interface: 90200
+## Title: oUF: Hiui
+## Author: HI
+## Version: 0.0.0.2
+## Notes: oUF layout for Hiui
+## Dependencies: oUF
+## OptionalDeps: TellMeWhen
+
+defaults.lua
+constants.lua
+dispelhighlight.lua
+
+aurahandling.lua
+border.lua
+
+tags.lua
+hiui.lua
