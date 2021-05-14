@@ -263,6 +263,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	Highlight dispelling in an obvious way.
 	--]]
 	local DispelHighlight = Health:CreateTexture(nil, "OVERLAY")
+	DispelHighlight.filter = true
 	if screenSide == "left" then
 		DispelHighlight:SetTexCoord(unpack(splitLevel.dispel.texCoord.left))
 	else

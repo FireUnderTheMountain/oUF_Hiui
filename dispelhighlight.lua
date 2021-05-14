@@ -39,8 +39,8 @@ local dispelTexture = {
 	Poison	= ns.default.splitLevel.dispel.Poison,
 	Enrage	= ns.default.splitLevel.purge.Enrage,
 	Purge	= ns.default.splitLevel.purge.Magic,
+	Generic = ns.default.splitLevel.dispel.Generic,
 }
-local displayTexture = ns.default.splitLevel.dispel.Generic
 local ally = false
 
 local colors = oUF.colors.debuff
@@ -110,6 +110,7 @@ function Update(self, event, unit)
 		element:PreUpdate()
 	end
 
+	--print("afflictedByType", afflictedByType, "| dispellable", dispellable, "| element.filter ", element.filter)
 	if afflictedByType and (dispellable or not element.filter) then
 		if ally and afflictedByType == "Magic" then
 			element:SetTexture(dispelTexture.Purge)
@@ -143,7 +144,7 @@ local function Enable(self)
 	self:RegisterEvent("UNIT_AURA", Update)
 
 	if element.GetTexture and not element:GetTexture() then
-		element:SetTexture(displayTexture)
+		element:SetTexture(dispelTexture.Generic)
 		element:Hide()
 	end
 
