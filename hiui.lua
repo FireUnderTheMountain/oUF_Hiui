@@ -1,4 +1,5 @@
 local addonName, addon = ...
+local oUF_Hiui = LibStub("AceAddon-3.0"):GetAddon("oUF_Hiui")
 local default = addon.custom or addon.default
 local oUF = oUF
 
@@ -48,6 +49,8 @@ function SplitLevelFrame(self, unit, screenSide)
 	HealthArt:SetTexCoord(unpack(splitLevel.health.art.texCoord))
 	HealthArt:SetPoint("TOPLEFT", self, "TOPLEFT")
 	HealthArt:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+
+	self.HealthArt = HealthArt
 
 
 
@@ -287,86 +290,20 @@ function SplitLevelFrame(self, unit, screenSide)
 		--[[	Class Power
 				Combo/Chi/Holy Power/Runes
 		--]]
-		local ClassPower = {}
-		local ClassPowerMargin = 16	-- Magic number
+		local ClassPower
 
-		if yourClass == "PALADIN" then
-			for index = 1, 10 do
-				local Bar = CreateFrame("StatusBar", this .. "ClassPowerSegment" .. index, self)
-
-				-- This disables the "default" oUF combo point texture.
-				Bar:SetStatusBarTexture([[Interface\PlayerFrame\Priest-ShadowUI]])	--Anything
-				Bar:GetStatusBarTexture():SetColorTexture(0, 0, 0, 0)
-
-
-				--Bar:SetPoint("TOPRIGHT", Power, "BOTTOMRIGHT", -(index - 1) * ClassPowerMargin, 0)
-
-
-				local Icon = Bar:CreateTexture(nil, "ARTWORK", nil, 1)
-
-				-- Each holy power has a custom graphic in one file.
-				local tc = { 0, 0, 0, 0 }
-				--local r = math.rad(-90)
-				local point
-				if index == 1 then
-					tc = { 0, 1/4, 0, 1 }
-					point = { "LEFT", UIParent, "LEFT", 585.77, 32 } -- magic number
-				elseif index == 2 then
-					tc = { 1/4, 2/4, 0, 1 }
-					point = { "LEFT", ClassPower[1], "LEFT", 0, 0 }
-				elseif index == 3 then
-					tc = { 2/4, 3/4, 0, 1 }
-					point = { "LEFT", ClassPower[1], "LEFT", 0, 0 }
-				else
-					point = { "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, 0 }
-				end
-
-				Icon:SetTexture([[Interface\AddOns\oUF_Hiui\textures\holyPower]])
-				Icon:SetTexCoord(unpack(tc))
-					
-				Icon:SetVertexColor(252/255, 233/255, 79/255) -- no work
-				--Icon:SetRotation(r)
-				Bar:SetSize(90, 30/556 * 2048/3)
-
-				--356, 464
-				--TMW:group:1Vqn91C79R8S
-				Bar:SetPoint(unpack(point))
-				Icon:SetPoint("TOPLEFT", Bar, "TOPLEFT")
-				Icon:SetPoint("BOTTOMRIGHT", Bar, "BOTTOMRIGHT")
-
-				ClassPower[index] = Bar
-
-			end
+		if yourClass == "PALADIN" and oUF_Hiui.db.profile.use_new_holypower then
+			ClassPower = addon.splitLevel_HolyPower(self, this)
 		else
-			for index = 1, 10 do
-				local Bar = CreateFrame("StatusBar", this .. "ClassPowerSegment" .. index, self)
-
-				-- This disables the "default" oUF combo point texture.
-				Bar:SetStatusBarTexture([[Interface\PlayerFrame\Priest-ShadowUI]])	--Anything
-				Bar:GetStatusBarTexture():SetColorTexture(0, 0, 0, 0)
-
-				Bar:SetSize(ClassPowerMargin, ClassPowerMargin)
-				Bar:SetPoint("BOTTOMRIGHT", this .. "PowerBar", "TOPRIGHT", -(index - 1) * ClassPowerMargin, 0)
-
-
-
-				local Icon = Bar:CreateTexture(nil, "ARTWORK", nil, 1)
-
-				Icon:SetTexCoord(0.45703125, 0.60546875, 0.44531250, 0.73437500)
-				Icon:SetTexture([[Interface\PlayerFrame\Priest-ShadowUI]])
-				Icon:SetDesaturated(true)
-				Icon:SetVertexColor(1, .96, .41)
-				Icon:SetSize(Bar:GetSize())
-				Icon:SetPoint("CENTER", Bar, "CENTER")
-
-
-				ClassPower[index] = Bar
-			end
+			ClassPower = addon.splitLevel_DefaultClassPower(self, this)
 		end
 
 		self.ClassPower = ClassPower
 
-		if yourClass == "DRUID" then
+		--[[ 	Druid Mana
+				A temporary text field to contain druid's mana when they're in form.
+		--]]
+		if yourClass == "DRUID" or yourClass == "PRIEST" then
 			local druidMana = Health:CreateFontString(this .. "DruidMana", "OVERLAY")
 			druidMana:SetFont([[Fonts\FRIZQT__.TTF]], 16, "THICKOUTLINE")
 			druidMana:SetTextColor(1, 1, 1)

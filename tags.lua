@@ -114,14 +114,12 @@ tagevents['hiui:splitLevelClass'] = "UNIT_CLASSIFICATION_CHANGED GROUP_ROSTER_UP
 tags['hiui:druidMana'] = function(unit)
 	if UnitInVehicle(unit) then return end
 
-	local powerType = UnitPowerType(unit)
 	local mana = Enum.PowerType.Mana
-	--if unit ~= "player" or powerType == 0 (mana) then return end
-	if powerType == mana then return end
-	
-	local curM, maxM = UnitPower(unit, mana), UnitPowerMax(unit, mana)
 
-	return floor(curM/maxM * 100 + 0.5)
+	if UnitPowerType(unit) == mana then return end
+	--if unit ~= "player" or powerType == 0 (mana) then return end
+
+	return floor(UnitPower(unit, mana)/UnitPowerMax(unit, mana) * 100 + 0.5)
 end
 tagevents['hiui:druidMana'] = "UNIT_POWER_UPDATE UNIT_MAXPOWER UNIT_DISPLAYPOWER"
 
