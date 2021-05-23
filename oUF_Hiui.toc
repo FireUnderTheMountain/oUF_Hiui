@@ -5,13 +5,21 @@
 ## Notes: oUF layout for Hiui
 ## Dependencies: oUF
 ## OptionalDeps: TellMeWhen
+## SavedVariables: oUF_HiuiDB
+## X-Embeds: Ace3
 
 defaults.lua
-constants.lua
+#constants.lua
+
+# Options:
+ace.lua
+
+# Layouts:
+splitLevel.lua
+
+# Elements:
 dispelhighlight.lua
-
-aurahandling.lua
-border.lua
-
 tags.lua
+
+# Main:
 hiui.lua
