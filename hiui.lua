@@ -189,18 +189,18 @@ function SplitLevelFrame(self, unit, screenSide)
 
 	local HealthAbsolute = Health:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	HealthAbsolute:SetTextColor(1, 1, 1)
-	self:Tag(HealthAbsolute, '[$>hiui:curhp<$]')
+	self:Tag(HealthAbsolute, "[$>hiui:curhp<$]")
 
 	Health.value = HealthAbsolute
 
 	if screenSide == "left" then
 		HealthPercent:SetPoint("BOTTOMRIGHT", Health, "RIGHT", 0, 1)
 		HealthAbsolute:SetPoint("TOPRIGHT", Health, "RIGHT", 0, -1)
-		self:Tag(HealthPercent, '[|cff999999$>offline<$|r    ][$>hiui:perhp<$%]')
+		self:Tag(HealthPercent, "[|cff999999$>offline<$|r    ][$>hiui:perhp<$%]")
 	else
 		HealthPercent:SetPoint("BOTTOMLEFT", Health, "LEFT", 0, 1)
 		HealthAbsolute:SetPoint("TOPLEFT", Health, "LEFT", 0, -1)
-		self:Tag(HealthPercent, '[$>hiui:perhp<$%][    |cff999999$>offline<$|r]')
+		self:Tag(HealthPercent, "[$>hiui:perhp<$%][    |cff999999$>offline<$|r]")
 	end
 
 
@@ -251,12 +251,12 @@ function SplitLevelFrame(self, unit, screenSide)
 		name:SetJustifyH("RIGHT")
 		name:SetPoint("RIGHT", level, "LEFT")
 
-		self:Tag(name, '[$>name<$|r:]')
+		self:Tag(name, "[$>name<$|r:]")
 	else
 		name:SetJustifyH("LEFT")
 		name:SetPoint("LEFT", level, "RIGHT")
 
-		self:Tag(name, '[:$>name<$|r]')
+		self:Tag(name, "[:$>name<$|r]")
 	end
 
 	self.Name = name
@@ -317,7 +317,7 @@ function SplitLevelFrame(self, unit, screenSide)
 				druidMana:SetPoint("BOTTOMRIGHT", Health, "BOTTOM")
 			end
 
-			self:Tag(druidMana, '[hiui:druidMana<$%]')
+			self:Tag(druidMana, "[hiui:druidMana<$%]")
 			self.DruidMana = druidMana
 		end
 
@@ -325,13 +325,13 @@ function SplitLevelFrame(self, unit, screenSide)
 		--[[	PvP/Warmode Icon
 				"Badge" is populated by oUF with the icon for your pvp rank.
 		--]]
-		local PvPIndicator = self:CreateTexture(nil, 'OVERLAY', nil, -1)
+		local PvPIndicator = self:CreateTexture(nil, "OVERLAY", nil, -1)
 		PvPIndicator:SetSize(30, 30)
 		PvPIndicator:SetPoint("CENTER", level, "CENTER")
 
-		local Badge = self:CreateTexture(nil, 'ARTWORK')
+		local Badge = self:CreateTexture(nil, "ARTWORK")
 		Badge:SetSize(25, 26)
-		Badge:SetPoint('CENTER', PvPIndicator, 'CENTER')
+		Badge:SetPoint("CENTER", PvPIndicator, "CENTER")
 
 		PvPIndicator.Badge = Badge
 		self.PvPIndicator = PvPIndicator
@@ -373,10 +373,6 @@ function SplitLevelFrame(self, unit, screenSide)
 		combatIcon:SetSize(24, 24)
 		combatIcon:SetPoint("CENTER", combatIconBg, "CENTER", (screenSide == "left") and 1 or -1, 0)
 
-		combatIndicator.combatIcon = combatIcon
-		combatIndicator.combatIconBg = combatIconBg
-		self.CombatIndicator = combatIndicator
-
 		if screenSide == "left" then
 			restIconBg:SetPoint("TOPLEFT", self, "LEFT")
 			combatIconBg:SetPoint("TOPLEFT", self, "LEFT")
@@ -385,6 +381,9 @@ function SplitLevelFrame(self, unit, screenSide)
 			combatIconBg:SetPoint("TOPRIGHT", self, "RIGHT")
 		end
 
+		combatIndicator.combatIcon = combatIcon
+		combatIndicator.combatIconBg = combatIconBg
+		self.CombatIndicator = combatIndicator
 	end
 
 
@@ -467,7 +466,7 @@ function ThinFrame(self, unit, screenSide)
 	end
 
 	nameAndLevel:SetTextColor(1, 1, 1)
-	self:Tag(nameAndLevel, '[$>level<$:][name]')
+	self:Tag(nameAndLevel, "[$>level<$:][name]")
 
 	self.Name = nameAndLevel
 
@@ -482,7 +481,7 @@ function ThinFrame(self, unit, screenSide)
 	end
 
 	HealthText:SetTextColor(1, 1, 1)
-	self:Tag(HealthText, '[|cffc41f3b$>dead<$|r][$>perhp<$%]')
+	self:Tag(HealthText, "[|cffc41f3b$>dead<$|r][$>perhp<$%]")
 
 	Health.value = HealthText
 
@@ -582,11 +581,11 @@ function MiniFrame(self, unit, screenSide)
 	end
 
 	if unit == "pet" then
-		self:Tag(level, '[level]')
+		self:Tag(level, "[level]")
 	elseif unit == "targettarget" then
-		self:Tag(level, '[raidcolor][difficulty][level]|r')
+		self:Tag(level, "[raidcolor][difficulty][level]|r")
 	else
-		self:Tag(level, '[raidcolor][difficulty][level]|r') -- placeholder
+		self:Tag(level, "[raidcolor][difficulty][level]|r") -- placeholder
 	end
 
 -- 	level:SetTextColor(1, 1, 1)
@@ -596,11 +595,11 @@ function MiniFrame(self, unit, screenSide)
 	if screenSide == "left" then
 		arenaspec:SetPoint("BOTTOMLEFT", level, "BOTTOMRIGHT")
 		arenaspec:SetJustifyH("RIGHT")
-		self:Tag(arenaspec, '[raidcolor][arenaspec]|r')
+		self:Tag(arenaspec, "[raidcolor][arenaspec]|r")
 	else
 		arenaspec:SetPoint("BOTTOMRIGHT", level, "BOTTOMLEFT")
 		arenaspec:SetJustifyH("LEFT")
-		self:Tag(arenaspec, '[raidcolor][arenaspec]|r')
+		self:Tag(arenaspec, "[raidcolor][arenaspec]|r")
 	end
 
 	arenaspec:SetTextColor(1, 1, 1)
@@ -619,15 +618,15 @@ function MiniFrame(self, unit, screenSide)
 
 	if unit == "pet" then
 		if screenSide == "left" then
-			self:Tag(name, '[name<$:]')
+			self:Tag(name, "[name<$:]")
 		else
-			self:Tag(name, '[:$>name]')
+			self:Tag(name, "[:$>name]")
 		end
 	else
 		if screenSide == "left" then
-			self:Tag(name, '[hiui:reaction][name<$:]')
+			self:Tag(name, "[hiui:reaction][name<$:]")
 		else
-			self:Tag(name, '[:$>hiui:reaction][name]')
+			self:Tag(name, "[:$>hiui:reaction][name]")
 		end
 	end
 
@@ -804,12 +803,12 @@ local blueprints = function(self)
 
 	--self:Spawn("party", "hiuiPartyFrame")
 	-- oUF:SpawnHeader(overrideName, overrideTemplate, visibility, attributes ...)
-	local party = self:SpawnHeader(nil, nil, 'raid,party,solo',
+	local party = self:SpawnHeader(nil, nil, "raid,party,solo",
 		-- http://wowprogramming.com/docs/secure_template/Group_Headers
 		-- Set header attributes
-		'showParty', true,
-		'showPlayer', true,
-		'yOffset', -20
+		"showParty", true,
+		"showPlayer", true,
+		"yOffset", -20
 	)
 	party:SetPoint("RIGHT")
 	-- setInsets(party) ??
