@@ -250,7 +250,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	if screenSide == "left" then
 		name:SetJustifyH("RIGHT")
 		name:SetPoint("RIGHT", level, "LEFT")
-		
+
 		self:Tag(name, '[$>name<$|r:]')
 	else
 		name:SetJustifyH("LEFT")
@@ -305,7 +305,7 @@ function SplitLevelFrame(self, unit, screenSide)
 				A temporary text field to contain druid's mana when they're in form.
 		--]]
 		if yourClass == "DRUID" or yourClass == "PRIEST" then
-			local druidMana = Health:CreateFontString(this .. "DruidMana", "OVERLAY")
+			local druidMana = Health:CreateFontString(nil, "OVERLAY")
 			druidMana:SetFont([[Fonts\FRIZQT__.TTF]], 16, "THICKOUTLINE")
 			druidMana:SetTextColor(1, 1, 1)
 
@@ -346,11 +346,11 @@ function SplitLevelFrame(self, unit, screenSide)
 
 		local restingIndicator = CreateFrame("Frame", nil, self)
 
-		local restIconBg = restingIndicator:CreateTexture(this .. "RestIconBg", "OVERLAY", nil, 0)
+		local restIconBg = restingIndicator:CreateTexture(nil, "OVERLAY", nil, 0)
 		restIconBg:SetTexture([[Interface/AddOns/oUF_Hiui/textures/iconbg]])
 		restIconBg:SetSize(bgSquareSize-1, bgSquareSize)
 
-		local restIcon = restingIndicator:CreateTexture(this .. "RestIcon", "OVERLAY", nil, 1)
+		local restIcon = restingIndicator:CreateTexture(nil, "OVERLAY", nil, 1)
 		restIcon:SetTexture(130936)
 		restIcon:SetTexCoord(0, 0.5, 0, 0.5)
 		restIcon:SetSize(24, 24)
@@ -363,18 +363,18 @@ function SplitLevelFrame(self, unit, screenSide)
 
 		local combatIndicator = CreateFrame("Frame", nil, self)
 
-		local combatIconBg = combatIndicator:CreateTexture(this .. "CombatIconBg", "OVERLAY", nil, 2)
+		local combatIconBg = combatIndicator:CreateTexture(nil, "OVERLAY", nil, 2)
 		combatIconBg:SetTexture([[Interface/AddOns/oUF_Hiui/textures/iconbg]])
 		combatIconBg:SetSize(bgSquareSize-1, bgSquareSize)
 
-		local combatIcon = combatIndicator:CreateTexture(this .. "CombatIcon", "OVERLAY", nil, 3)
+		local combatIcon = combatIndicator:CreateTexture(nil, "OVERLAY", nil, 3)
 		combatIcon:SetTexture(130936)
 		combatIcon:SetTexCoord(0.5, 1, 0, 0.5)
 		combatIcon:SetSize(24, 24)
 		combatIcon:SetPoint("CENTER", combatIconBg, "CENTER", (screenSide == "left") and 1 or -1, 0)
 
-		restingIndicator.combatIcon = combatIcon
-		restingIndicator.combatIconBg = combatIconBg
+		combatIndicator.combatIcon = combatIcon
+		combatIndicator.combatIconBg = combatIconBg
 		self.CombatIndicator = combatIndicator
 
 		if screenSide == "left" then
