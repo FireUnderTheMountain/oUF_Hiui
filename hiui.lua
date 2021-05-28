@@ -39,12 +39,12 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Health Bar
 	Some shenanigans will ensue.
 	--]]
-	local Health = CreateFrame("StatusBar", this .. "InvisibleHealthBar", self)
+	local Health = CreateFrame("StatusBar", nil, self)
 
 	--[[	Health Art (Border)
 	Art frame keeping the health bar in check.
 	--]]
-	local HealthArt = Health:CreateTexture(this .. "HealthArt", "ARTWORK", nil, 2)
+	local HealthArt = Health:CreateTexture(nil, "ARTWORK", nil, 2)
 	HealthArt:SetTexture(splitLevel.health.art[screenSide])
 	HealthArt:SetTexCoord(unpack(splitLevel.health.art.texCoord))
 	HealthArt:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -59,7 +59,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	This texture necessarily needs a name to be passed to the highlighting
 	function (which is currently part of an oUF tag function.)
 	--]]
-	local ClassHighlight = Health:CreateTexture(this .. "ClassHighlight", "ARTWORK", nil, 3)
+	local ClassHighlight = Health:CreateTexture(nil, "ARTWORK", nil, 3)
 	ClassHighlight:SetAllPoints(HealthArt)
 	if screenSide == "left" then
 		ClassHighlight:SetTexCoord(unpack(splitLevel.class.texCoord.left))
@@ -76,7 +76,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	reaction. This texture necessarily needs a name to be passed to the
 	highlighting function (which is currently part of an oUF tag function.)
 	--]]
-	local hostility = Health:CreateTexture(this .. "SelectionHighlight", "ARTWORK", nil, 3)
+	local hostility = Health:CreateTexture(nil, "ARTWORK", nil, 3)
 	hostility:SetAllPoints(HealthArt)
 	if screenSide == "left" then
 		hostility:SetTexCoord(unpack(splitLevel.selection.texCoord.left))
@@ -112,7 +112,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Visible Health Bar
 	This bar clips its texture instead of shifting it.
 	--]]
-	local visibleHealthBar = Health:CreateTexture(this .. "VisibleHealthBar", "ARTWORK", nil, 1)
+	local visibleHealthBar = Health:CreateTexture(nil, "ARTWORK", nil, 1)
 	visibleHealthBar:SetTexture(splitLevel.health.bar[screenSide])
 	if screenSide == "left" then
 		visibleHealthBar:SetPoint("TOPRIGHT", Health, "TOPRIGHT")
@@ -146,7 +146,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Health Bar Background
 	Bright background that's revealed as damage is taken.
 	--]]
-	local HealthBg = Health:CreateTexture(this .. "HealthBg", "ARTWORK", nil, -1)
+	local HealthBg = Health:CreateTexture(nil, "ARTWORK", nil, -1)
 	HealthBg:SetTexture(splitLevel.health.bg[screenSide])
 	HealthBg:SetAllPoints(Health)
 
@@ -160,13 +160,13 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Power Bar
 	A colored status bar for mana/energy/rage
 	--]]
-	local Power = CreateFrame("StatusBar", this .. "PowerBar", self)
+	local Power = CreateFrame("StatusBar", nil, self)
 	Power:SetStatusBarTexture([[Interface/AddOns/Details/images/bar_flat]])
 
-	local artSeparator = floor(6/60 * frame.height)
+	local artMargin = floor(6/60 * frame.height)
 	Power:SetHeight(4)
-	Power:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 0, artSeparator)
-	Power:SetPoint("BOTTOMRIGHT", Health, "TOPRIGHT", 0, artSeparator)
+	Power:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 0, artMargin)
+	Power:SetPoint("BOTTOMRIGHT", Health, "TOPRIGHT", 0, artMargin)
 
 	if screenSide == "left" then
 		Power:SetReverseFill(true)
@@ -214,7 +214,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	The colored texture bordering (highlighting) is part of level only because
 	of convenience.
 	--]]
-	local level = Health:CreateFontString(this .. "LevelText", "OVERLAY")
+	local level = Health:CreateFontString(nil, "OVERLAY")
 	level:SetFont([[Fonts\FRIZQT__.TTF]], 16, "THICKOUTLINE")
 	if screenSide == "left" then
 		level:SetJustifyH("RIGHT")
@@ -289,7 +289,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	--]]
 	if unit == "player" then
 		--[[	Class Power
-				Combo/Chi/Holy Power/Runes
+		Combo/Chi/Holy Power/Runes
 		--]]
 		local ClassPower
 
@@ -302,7 +302,7 @@ function SplitLevelFrame(self, unit, screenSide)
 		self.ClassPower = ClassPower
 
 		--[[ 	Druid Mana
-				A temporary text field to contain druid's mana when they're in form.
+		A temporary text field to contain druid's mana when they're in form.
 		--]]
 		if yourClass == "DRUID" or yourClass == "PRIEST" then
 			local druidMana = Health:CreateFontString(nil, "OVERLAY")
@@ -323,7 +323,7 @@ function SplitLevelFrame(self, unit, screenSide)
 
 
 		--[[	PvP/Warmode Icon
-				"Badge" is populated by oUF with the icon for your pvp rank.
+		"Badge" is populated by oUF with the icon for your pvp rank.
 		--]]
 		local PvPIndicator = self:CreateTexture(nil, "OVERLAY", nil, -1)
 		PvPIndicator:SetSize(30, 30)
@@ -339,7 +339,7 @@ function SplitLevelFrame(self, unit, screenSide)
 
 
 		--[[	Combat and Resting Icons
-				These icons overlap in default UI, so I think it's okay here too.
+		These icons overlap in default UI, so I think it's okay here too.
 		--]]
 		local bgSquareSize = 35 -- TODO: magic number
 
@@ -410,16 +410,18 @@ function ThinFrame(self, unit, screenSide)
 	--[[	Health Bar
 	Some shenanigans will ensue.
 	--]]
-	local Health = CreateFrame("StatusBar", this .. "HealthBar", self)
+	local Health = CreateFrame("StatusBar", nil, self)
 
 	--[[	Health Art (Border)
 	Art frame keeping the health bar in check.
 	--]]
-	local HealthArt = Health:CreateTexture(this .. "HealthArt", "ARTWORK", nil, 2)
+	local HealthArt = Health:CreateTexture(nil, "ARTWORK", nil, 2)
 	HealthArt:SetTexture(thin.health.art[screenSide])
 	HealthArt:SetTexCoord(unpack(thin.health.art.texCoord))
 	HealthArt:SetPoint("TOPLEFT", self, "TOPLEFT")
 	HealthArt:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+
+	self.HealthArt = HealthArt
 
 
 
@@ -445,7 +447,7 @@ function ThinFrame(self, unit, screenSide)
 	--[[	Health Bar Background
 	Bright background that's revealed as damage is taken.
 	--]]
-	local HealthBg = Health:CreateTexture(this .. "HealthBg", "ARTWORK", nil, -1)
+	local HealthBg = Health:CreateTexture(nil, "ARTWORK", nil, -1)
 	HealthBg:SetTexture(thin.health.bg[screenSide])
 	HealthBg:SetAllPoints(Health)
 
@@ -509,16 +511,18 @@ function MiniFrame(self, unit, screenSide)
 	--[[	Health Bar
 	Some shenanigans will ensue.
 	--]]
-	local Health = CreateFrame("StatusBar", this .. "HealthBar", self)
+	local Health = CreateFrame("StatusBar", nil, self)
 
 	--[[	Health Art (Border)
 	Art frame keeping the health bar in check.
 	--]]
-	local HealthArt = Health:CreateTexture(this .. "HealthArt", "ARTWORK", nil, 2)
+	local HealthArt = Health:CreateTexture(nil, "ARTWORK", nil, 2)
 	HealthArt:SetTexture(mini.health.art[screenSide])
 	HealthArt:SetTexCoord(unpack(mini.health.art.texCoord))
 	HealthArt:SetPoint("TOPLEFT", self, "TOPLEFT")
 	HealthArt:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+
+	self.HealthArt = HealthArt
 
 
 
@@ -545,7 +549,7 @@ function MiniFrame(self, unit, screenSide)
 	--[[	Health Bar Background
 	Bright background that's revealed as damage is taken.
 	--]]
-	local HealthBg = Health:CreateTexture(this .. "HealthBg", "ARTWORK", nil, -1)
+	local HealthBg = Health:CreateTexture(nil, "ARTWORK", nil, -1)
 	HealthBg:SetTexture(mini.health.bg[screenSide])
 	HealthBg:SetAllPoints(Health)
 
