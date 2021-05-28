@@ -1,6 +1,6 @@
-local addonName, addon = ...
+local addonName, Hiui = ...
 local oUF_Hiui = LibStub("AceAddon-3.0"):GetAddon("oUF_Hiui")
-local default = addon.custom or addon.default
+local default = Hiui.custom or Hiui.default
 local oUF = oUF
 
 local CreateFrame = CreateFrame
@@ -121,6 +121,7 @@ function SplitLevelFrame(self, unit, screenSide)
 		visibleHealthBar:SetPoint("TOPLEFT", Health, "TOPLEFT")
 		visibleHealthBar:SetPoint("BOTTOMLEFT", Health, "BOTTOMLEFT")
 	end
+	self.VisibleHealthBar = visibleHealthBar
 
 	function Health.PostUpdate(self, unit, cur, max)
 		local percCur = cur/max
@@ -293,9 +294,9 @@ function SplitLevelFrame(self, unit, screenSide)
 		local ClassPower
 
 		if yourClass == "PALADIN" and oUF_Hiui.db.profile.use_new_holypower then
-			ClassPower = addon.splitLevel_HolyPower(self, this)
+			ClassPower = Hiui.splitLevel_HolyPower(self, this)
 		else
-			ClassPower = addon.splitLevel_DefaultClassPower(self, this)
+			ClassPower = Hiui.splitLevel_DefaultClassPower(self, this)
 		end
 
 		self.ClassPower = ClassPower
@@ -317,6 +318,7 @@ function SplitLevelFrame(self, unit, screenSide)
 			end
 
 			self:Tag(druidMana, '[hiui:druidMana<$%]')
+			self.DruidMana = druidMana
 		end
 
 
@@ -339,42 +341,40 @@ function SplitLevelFrame(self, unit, screenSide)
 		--[[	Combat and Resting Icons
 				These icons overlap in default UI, so I think it's okay here too.
 		--]]
-		local bgSquareSize = 35
+		local bgSquareSize = 35 -- TODO: magic number
 
 
 		local restingIndicator = CreateFrame("Frame", nil, self)
 
-		local restIconBg = restingIndicator:CreateTexture(this .. "RestIconBg", "OVERLAY")
+		local restIconBg = restingIndicator:CreateTexture(this .. "RestIconBg", "OVERLAY", nil, 0)
 		restIconBg:SetTexture([[Interface/AddOns/oUF_Hiui/textures/iconbg]])
-		restIconBg:SetDrawLayer("OVERLAY", 0)
 		restIconBg:SetSize(bgSquareSize-1, bgSquareSize)
-		
 
-		local restIcon = restingIndicator:CreateTexture(this .. "RestIcon", "OVERLAY")
+		local restIcon = restingIndicator:CreateTexture(this .. "RestIcon", "OVERLAY", nil, 1)
 		restIcon:SetTexture(130936)
 		restIcon:SetTexCoord(0, 0.5, 0, 0.5)
-		restIcon:SetDrawLayer("OVERLAY", 1)
 		restIcon:SetSize(24, 24)
 		restIcon:SetPoint("CENTER", restIconBg, "CENTER", -1, -3)
 
+		restingIndicator.restIcon = restIcon
+		restingIndicator.restIconBg = restIconBg
 		self.RestingIndicator = restingIndicator
 
 
 		local combatIndicator = CreateFrame("Frame", nil, self)
-		combatIndicator:SetParent(self)
 
-		local combatIconBg = combatIndicator:CreateTexture(this .. "CombatIconBg", 'OVERLAY', nil, 2)
+		local combatIconBg = combatIndicator:CreateTexture(this .. "CombatIconBg", "OVERLAY", nil, 2)
 		combatIconBg:SetTexture([[Interface/AddOns/oUF_Hiui/textures/iconbg]])
-		--combatIconBg:SetDrawLayer("OVERLAY", 2)
 		combatIconBg:SetSize(bgSquareSize-1, bgSquareSize)
 
-		local combatIcon = combatIndicator:CreateTexture(this .. "CombatIcon", 'OVERLAY')
+		local combatIcon = combatIndicator:CreateTexture(this .. "CombatIcon", "OVERLAY", nil, 3)
 		combatIcon:SetTexture(130936)
 		combatIcon:SetTexCoord(0.5, 1, 0, 0.5)
-		combatIcon:SetDrawLayer("OVERLAY", 3)
 		combatIcon:SetSize(24, 24)
 		combatIcon:SetPoint("CENTER", combatIconBg, "CENTER", (screenSide == "left") and 1 or -1, 0)
 
+		restingIndicator.combatIcon = combatIcon
+		restingIndicator.combatIconBg = combatIconBg
 		self.CombatIndicator = combatIndicator
 
 		if screenSide == "left" then
@@ -404,7 +404,7 @@ function ThinFrame(self, unit, screenSide)
 	local this = addonName .. unit
 
 	if screenSide ~= "left" and screenSide ~= "right" then
-		DEFAULT_CHAT_FRAME:AddMessage("Tried to initialize " .. this or "oUF_Hiui unit frame" .. " on an invalid side. Side needs to be left or right.")
+		DEFAULT_CHAT_FRAME:AddMessage("Tried to initialize " .. (this or "oUF_Hiui unit frame") .. " on an invalid side. Side needs to be left or right.")
 	end
 
 
@@ -745,9 +745,6 @@ local function Shared(self, unit)
 end
 
 local blueprints = function(self)
-
-	local addonName = addonName
-
 	local function setInsets(self)
 		local s = self.hiuiStyle
 		if default[s].hitInsets then
@@ -760,7 +757,7 @@ local blueprints = function(self)
 
 
 	self:SetActiveStyle("Hiui")
-	
+
 
 	local fAnch = default.focus.frame.anchor
 	self:Spawn("focus", addonName .. "focusFrame"):SetPoint(fAnch.bitt, fAnch.frame, fAnch.anchor, fAnch.pos.left or -fAnch.pos.right, -fAnch.pos.top or fAnch.pos.bottom)
@@ -859,6 +856,7 @@ local blueprints = function(self)
 		local anch = frame.anchor
 		local newAnchor = frame.defineAnchor()
 		if newAnchor then anch = newAnchor end
+
 		local MAX_ARENA_FRAMES = 5
 		for n=1, MAX_ARENA_FRAMES or 5 do
 			Arena[n] = self:Spawn("arena" .. n, addonName .. "arenaFrame" .. n)
@@ -877,66 +875,5 @@ local blueprints = function(self)
 	end
 end
 
-
---** PALADEEN GARBAGIO beneath this line **--
-local function dockToFrame(self, target)
-	for i, f in ipairs(self.ClassPower) do
-		if i == 1 then
-			f:ClearAllPoints()
-			f:SetPoint("LEFT", target, "LEFT", -15, 8)
-			f:SetHeight(150)
-		elseif i == 2 then
-			f:ClearAllPoints()
-			f:SetPoint("LEFT", target, "LEFT", -15, -8)
-			f:SetHeight(150)
-		elseif i == 3 then
-			f:ClearAllPoints()
-			f:SetPoint("LEFT", target, "LEFT", 0, 0)
-			f:SetHeight(150)
-		elseif i == 4 or i == 5 then
-			f:ClearAllPoints()
-			f:Hide()
-		end
-	end
-	-- oUF_HiuiplayerClassPowerSegment1:ClearAllPoints()
-	-- oUF_HiuiplayerClassPowerSegment1:SetPoint("LEFT", frame, "LEFT", -15, 8)
-	-- oUF_HiuiplayerClassPowerSegment1:SetHeight(150)
-
-	-- oUF_HiuiplayerClassPowerSegment2:ClearAllPoints()
-	-- oUF_HiuiplayerClassPowerSegment2:SetPoint("LEFT", frame, "LEFT", -15, -8)
-	-- oUF_HiuiplayerClassPowerSegment2:SetHeight(150)
-
-	-- oUF_HiuiplayerClassPowerSegment3:ClearAllPoints()
-	-- oUF_HiuiplayerClassPowerSegment3:SetPoint("LEFT", frame, "LEFT", 0, 0)
-	-- oUF_HiuiplayerClassPowerSegment3:SetHeight(150)
-
-	-- oUF_HiuiplayerClassPowerSegment4:ClearAllPoints()
-	-- oUF_HiuiplayerClassPowerSegment4:Hide()
-
-	-- oUF_HiuiplayerClassPowerSegment5:ClearAllPoints()
-	-- oUF_HiuiplayerClassPowerSegment5:Hide()
-end
-
-
-local function checkPaladinDocking()
-	if InCombatLockdown() then
-		C_Timer.After(8, checkPaladinDocking)
-	elseif yourClass == "Paladin" then
-		local oh = select(2, _G["oUF_HiuiplayerClassPowerSegment1"]:GetPoint(1))
-		if oh and not oh.GetGroupName then
-			for tmwi = 1, 10 do
-				local g = _G["TellMeWhen_Group" .. tmwi]
-				if g and g:GetGroupName() == "Three Tanking Buttons (Group: " .. tmwi .. ")" then
-					DEFAULT_CHAT_FRAME:AddMessage("Docking oUF_Hiui holy power to TMW.")
-					dockToFrame(_G["oUF_HiuiplayerFrame"], g)
-				end
-			end
-		end
-	end
-end
-
-
 oUF:RegisterStyle("Hiui", Shared)
 oUF:Factory(blueprints)
-
-C_Timer.After(1, checkPaladinDocking)
