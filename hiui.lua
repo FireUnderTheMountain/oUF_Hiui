@@ -226,8 +226,8 @@ function SplitLevelFrame(self, unit, screenSide)
 
 	level:SetTextColor(1, 1, 1)
 	local diff = (unit == "player" and "" or "[difficulty]")
-	local clHilite = (unit == "player" and "" or "[hiui:splitLevelClass(" .. this .. "ClassHighlight)]")
-	local selHilite = (unit == "player" and "" or "[hiui:splitLevelSelection(" .. this .. "SelectionHighlight)]")
+	local clHilite = (unit == "player" and "" or "[hiui:splitLevelClass(" .. this .. "Frame,ClassHighlight)]")
+	local selHilite = (unit == "player" and "" or "[hiui:splitLevelSelection(" .. this .. "Frame,SelectionHighlight)]")
 	self:Tag(level, clHilite .. selHilite .. diff .. "[level]|r")
 	self.Level = level
 
@@ -760,14 +760,15 @@ local blueprints = function(self)
 
 
 	self:SetActiveStyle("Hiui")
+	local fAnch
 
 
-	local fAnch = default.focus.frame.anchor
+	fAnch = default.focus.frame.anchor
 	self:Spawn("focus", addonName .. "focusFrame"):SetPoint(fAnch.bitt, fAnch.frame, fAnch.anchor, fAnch.pos.left or -fAnch.pos.right, -fAnch.pos.top or fAnch.pos.bottom)
 	self:Spawn("focustarget", "hiuiFocusTargetFrame"):Hide()
 
 
-	local fAnch = default.player.frame.anchor
+	fAnch = default.player.frame.anchor
 	local you = self:Spawn("player", addonName .. "playerFrame")
 	you:SetPoint(
 		fAnch.bitt, fAnch.frame, fAnch.anchor,
@@ -785,7 +786,7 @@ local blueprints = function(self)
 	setInsets(pet)
 
 
-	local fAnch = default.target.frame.anchor
+	fAnch = default.target.frame.anchor
 	local them = self:Spawn("target", addonName .. "targetFrame")
 	them:SetPoint(
 		fAnch.bitt, fAnch.frame, fAnch.anchor,

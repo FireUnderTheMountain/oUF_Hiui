@@ -71,13 +71,12 @@ tagevents['hiui:reaction'] = tagevents.difficulty
 
 
 --[[	splitLevel Frame hostility color.
-	Runtime determination is costly, so you'll get spammed with lua errors
-	if frame is not splitLevel. That's on you.
+Runtime determination is costly, so you'll get spammed with lua errors
+if frame is not splitLevel. That's on you.
 --]]
-tags['hiui:splitLevelSelection'] = function(u, ru, ...)
+tags['hiui:splitLevelSelection'] = function(u, _, f, elem)
 	local s = UnitSelectionType(u, false)
-	local tex = select(1, ...)
-	_G[tex]:SetTexture(addon.default.splitLevel.selection[s])
+	_G[f][elem]:SetTexture(addon.default.splitLevel.selection[s])
 
 	return nil
 end
@@ -86,11 +85,10 @@ tagevents['hiui:splitLevelSelection'] = "UNIT_FACTION GROUP_ROSTER_UPDATE"
 
 
 --[[	splitLevel Frame class color.
-	Runtime determination is costly, so you'll get spammed with lua errors
-	if frame is not splitLevel. That's on you.
+Runtime determination is costly, so you'll get spammed with lua errors
+if frame is not splitLevel. That's on you.
 --]]
-tags['hiui:splitLevelClass'] = function(u, ru, ...)
-	local tex = select(1, ...)
+tags['hiui:splitLevelClass'] = function(u, _, f, elem)
 	local n = nil
 
 	if UnitIsPlayer(u) then
@@ -98,7 +96,7 @@ tags['hiui:splitLevelClass'] = function(u, ru, ...)
 		n = addon.default.splitLevel.class[cl]
 	end
 
-	_G[tex]:SetTexture(n)
+	_G[f][elem]:SetTexture(n)
 
 	return nil
 end
@@ -106,10 +104,9 @@ tagevents['hiui:splitLevelClass'] = "UNIT_CLASSIFICATION_CHANGED GROUP_ROSTER_UP
 
 
 --[[	Druid Mana
-	This doesn't exist for some reason.
-	We don't test for unit == player here because it's costly; instead check when
-	creating the element. Only the player has "druid mana" so check for both unit and class when making it.
-
+This doesn't exist for some reason.
+We don't test for unit == player here because it's costly; instead check when
+creating the element. Only the player has "druid mana" so check for both unit and class when making it.
 --]]
 tags['hiui:druidMana'] = function(unit)
 	if UnitInVehicle(unit) then return end
