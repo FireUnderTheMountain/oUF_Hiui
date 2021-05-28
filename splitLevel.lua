@@ -15,7 +15,8 @@ Hiui.splitLevel_DefaultClassPower = function(parent, name, point1, point2)
         bar:SetSize(magicnumber, magicnumber)
 
         -- TODO: fix - out of scope reference / magic reference to 'name .. "PowerBar"' and position.
-        bar:SetPoint("BOTTOMRIGHT", name .. "PowerBar", "TOPRIGHT", -(i - 1) * magicnumber, 0)
+        --bar:SetPoint("BOTTOMRIGHT", name .. "PowerBar", "TOPRIGHT", -(i - 1) * magicnumber, 0)
+        bar:SetPoint("BOTTOMRIGHT", parent.Power, "TOPRIGHT", -(i - 1) * magicnumber, 0)
 
 
         -- HealthArt is Artwork 2
