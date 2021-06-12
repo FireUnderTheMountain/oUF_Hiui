@@ -29,7 +29,11 @@ function SplitLevelFrame(self, unit, screenSide)
 	local frame = subj.frame
 
 	self.hiuiStyle = "splitLevel"
+	self.screenSide = screenSide
+	self.template = default.splitLevel
+	self:SetSize(frame.width, frame.height)
 	local this = addonName .. unit
+
 
 	if screenSide ~= "left" and screenSide ~= "right" then
 		DEFAULT_CHAT_FRAME:AddMessage("Tried to initialize " .. (this or "a split level unit frame") .. " on an invalid side. Side needs to be left or right.")
@@ -183,11 +187,11 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Health Texts
 	Both percentage and absolutes
 	--]]
-	local HealthPercent = Health:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+	local HealthPercent = Health:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	HealthPercent:SetTextColor(1, 1, 1)
 	Health.perc = HealthPercent -- not a managed structure
 
-	local HealthAbsolute = Health:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+	local HealthAbsolute = Health:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	HealthAbsolute:SetTextColor(1, 1, 1)
 	self:Tag(HealthAbsolute, "[$>hiui:curhp<$]")
 
@@ -214,7 +218,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	The colored texture bordering (highlighting) is part of level only because
 	of convenience.
 	--]]
-	local level = Health:CreateFontString(nil, "OVERLAY")
+	local level = Health:CreateFontString(nil, "ARTWORK")
 	level:SetFont([[Fonts\FRIZQT__.TTF]], 16, "THICKOUTLINE")
 	if screenSide == "left" then
 		level:SetJustifyH("RIGHT")
@@ -236,7 +240,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	--[[	Name Text
 	Need to find a way to color level text. Inside tag maybe?
 	--]]
-	local name = Health:CreateFontString(nil, "OVERLAY")
+	local name = Health:CreateFontString(nil, "ARTWORK")
 	name:SetFont([[Fonts\FRIZQT__.TTF]], 16, "THICKOUTLINE")
 	name:SetTextColor(1, 1, 1)
 
@@ -263,10 +267,24 @@ function SplitLevelFrame(self, unit, screenSide)
 
 
 
+	local RaidRoleIndicator = Health:CreateTexture(nil, "ARTWORK")
+    RaidRoleIndicator:SetSize(30, 30)
+
+	if screenSide == "left" then
+		RaidRoleIndicator:SetPoint("RIGHT", name, "LEFT")
+	else
+	    RaidRoleIndicator:SetPoint("LEFT", name, "RIGHT")
+	end
+
+    -- Register it with oUF
+    self.RaidRoleIndicator = RaidRoleIndicator
+
+
+
 	--[[	Dispel highlighting
 	Highlight dispelling in an obvious way.
 	--]]
-	local DispelHighlight = Health:CreateTexture(nil, "OVERLAY")
+	local DispelHighlight = Health:CreateTexture(nil, "ARTWORK", nil, 4)
 	DispelHighlight.filter = true
 	if screenSide == "left" then
 		DispelHighlight:SetTexCoord(unpack(splitLevel.dispel.texCoord.left))
@@ -281,6 +299,17 @@ function SplitLevelFrame(self, unit, screenSide)
 	--DispelHighlight.PurgeMagic = 
 	--DispelHighlight.PurgeEnrage =
 	self.DispelHighlight = DispelHighlight
+
+
+
+	--[[	Raid Marker
+	"Badge" is populated by oUF with the icon for your pvp rank.
+	--]]
+	local RaidTargetIndicator = Health:CreateTexture(nil, "OVERLAY", nil, 1)
+    RaidTargetIndicator:SetSize(32, 32)
+    RaidTargetIndicator:SetPoint("CENTER", level)
+
+    self.RaidTargetIndicator = RaidTargetIndicator
 
 
 
@@ -322,10 +351,11 @@ function SplitLevelFrame(self, unit, screenSide)
 		end
 
 
+
 		--[[	PvP/Warmode Icon
 		"Badge" is populated by oUF with the icon for your pvp rank.
 		--]]
-		local PvPIndicator = self:CreateTexture(nil, "OVERLAY", nil, -1)
+		local PvPIndicator = self:CreateTexture(nil, "ARTWORK")
 		PvPIndicator:SetSize(30, 30)
 		PvPIndicator:SetPoint("CENTER", level, "CENTER")
 
@@ -384,14 +414,10 @@ function SplitLevelFrame(self, unit, screenSide)
 		combatIndicator.combatIcon = combatIcon
 		combatIndicator.combatIconBg = combatIconBg
 		self.CombatIndicator = combatIndicator
+
+	else -- player
+		self.Castbar = Hiui.splitLevel_CastBar(self, this)
 	end
-
-
-
-	--[[	Finalization and Cleanup
-	--]]
-	self:SetSize(frame.width, frame.height)
-	self.screenSide = screenSide
 end
 
 function ThinFrame(self, unit, screenSide)

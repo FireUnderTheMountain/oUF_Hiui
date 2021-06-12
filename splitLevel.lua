@@ -59,3 +59,60 @@ Hiui.splitLevel_HolyPower = function(parent, name)
 
     return classPower
 end
+
+Hiui.splitLevel_CastBar = function(parent, name)
+    local t = parent.template
+    local u = parent.unit
+    local stdLine = parent.Health:GetHeight()/2
+
+    local castbar = CreateFrame("StatusBar", name .. "CastBar", parent)
+
+    --castbar:SetWidth(parent.HealthBg)
+    -- MAGIC NUMBERS
+    castbar:SetPoint("TOPLEFT", parent.Health, "TOPLEFT")
+    castbar:SetPoint("TOPRIGHT", parent.Health, "TOPRIGHT")
+    --castbar:SetHeight(parent.Health:GetHeight()/2)
+    castbar:SetHeight(20) -- testing
+
+    local bg = castbar:CreateTexture(nil, "OVERLAY")
+    bg:SetAllPoints(castbar)
+    bg:SetTexture(0, 0, 0, 0)
+    --bg:SetTexture(1, 1, 1, 1) -- rgba
+
+    -- test values for this section from oUF/elements/castbar.lua
+    local spark = castbar:CreateTexture(nil, "OVERLAY")
+    spark:SetSize(20,20)
+    spark:SetBlendMode("ADD")
+    spark:SetPoint("CENTER", castbar:GetStatusBarTexture(), "RIGHT")
+
+    local timer = castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    if parent.screenSide == "left" then
+        timer:SetPoint("TOPLEFT", castbar, "TOP", 0, -2)
+    else
+        timer:SetPoint("TOPRIGHT", castbar, "TOP", 0, -2)
+    end
+
+    local spellName = castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    if parent.screenSide == "left" then
+        spellName:SetPoint("BOTTOMLEFT", parent.Health, "BOTTOM", 0, 2)
+    else
+        spellName:SetPoint("BOTTOMRIGHT", parent.Health, "BOTTOM", 0, 2)
+    end
+
+    local icon = castbar:CreateTexture(nil, "OVERLAY")
+    icon:SetSize(parent.Health:GetHeight()/2, parent.Health:GetHeight()/2)
+
+    local shield = castbar:CreateTexture(nil, "OVERLAY") -- not needed.
+    shield:SetSize(stdLine, stdLine) -- testing
+    shield:SetPoint("RIGHT", castbar)
+    -- SafeZone - latency
+
+    castbar.bg = bg
+    castbar.Spark = spark
+    castbar.Time = timer
+    castbar.Text = spellName
+    castbar.Icon = icon
+    castbar.Shield = shield
+
+    return castbar
+end
