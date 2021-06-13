@@ -27,12 +27,12 @@ function SplitLevelFrame(self, unit, screenSide)
 	local splitLevel = default.splitLevel
 	local subj = default[unit]
 	local frame = subj.frame
+	local this = addonName .. unit
 
 	self.hiuiStyle = "splitLevel"
 	self.screenSide = screenSide
 	self.template = default.splitLevel
 	self:SetSize(frame.width, frame.height)
-	local this = addonName .. unit
 
 
 	if screenSide ~= "left" and screenSide ~= "right" then
@@ -57,7 +57,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	self.HealthArt = HealthArt
 
 
-
 	--[[	Class Highlighting
 	Provides a highlight to the top of the frame based on unit class.
 	This texture necessarily needs a name to be passed to the highlighting
@@ -74,7 +73,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	self.ClassHighlight = ClassHighlight
 
 
-
 	--[[	Selection Highlighting
 	Provides a highlight to the underside of the frame based on unit
 	reaction. This texture necessarily needs a name to be passed to the
@@ -89,7 +87,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	end
 
 	self.SelectionHighlight = hostility
-
 
 
 	--[[	Player Health Status Bar
@@ -110,7 +107,6 @@ function SplitLevelFrame(self, unit, screenSide)
 		Health:SetReverseFill(true);
 	end
 	Health.frequentUpdates = subj.frequent.health or false
-
 
 
 	--[[	Visible Health Bar
@@ -146,7 +142,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	end
 
 
-
 	--[[	Health Bar Background
 	Bright background that's revealed as damage is taken.
 	--]]
@@ -158,7 +153,6 @@ function SplitLevelFrame(self, unit, screenSide)
 
 
 	self.Health = Health
-
 
 
 	--[[	Power Bar
@@ -183,7 +177,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	self.Power = Power
 
 
-
 	--[[	Health Texts
 	Both percentage and absolutes
 	--]]
@@ -206,7 +199,6 @@ function SplitLevelFrame(self, unit, screenSide)
 		HealthAbsolute:SetPoint("TOPLEFT", Health, "LEFT", 0, -1)
 		self:Tag(HealthPercent, "[$>hiui:perhp<$%][    |cff999999$>offline<$|r]")
 	end
-
 
 
 	--[[	Level Text
@@ -234,7 +226,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	local selHilite = (unit == "player" and "" or "[hiui:splitLevelSelection(" .. this .. "Frame,SelectionHighlight)]")
 	self:Tag(level, clHilite .. selHilite .. diff .. "[level]|r")
 	self.Level = level
-
 
 
 	--[[	Name Text
@@ -266,19 +257,39 @@ function SplitLevelFrame(self, unit, screenSide)
 	self.Name = name
 
 
-
-	local RaidRoleIndicator = Health:CreateTexture(nil, "ARTWORK")
-    RaidRoleIndicator:SetSize(30, 30)
+	--[[	Group Leader, Main Tank, Main Assist, Assist
+	All of them will stack side-by-side stating at the player's name next to their level, and moving away.
+	--]]
+    local LeaderIndicator = Health:CreateTexture(nil, "ARTWORK", nil, 2)
+    LeaderIndicator:SetSize(16, 16)
 
 	if screenSide == "left" then
-		RaidRoleIndicator:SetPoint("RIGHT", name, "LEFT")
+	    LeaderIndicator:SetPoint("BOTTOMRIGHT", name, "TOPRIGHT", 0, -4)
 	else
-	    RaidRoleIndicator:SetPoint("LEFT", name, "RIGHT")
+		LeaderIndicator:SetPoint("BOTTOMLEFT", name, "TOPLEFT", 0 -4)
 	end
 
-    -- Register it with oUF
-    self.RaidRoleIndicator = RaidRoleIndicator
+	local RaidRoleIndicator = Health:CreateTexture(nil, "ARTWORK", nil, 2)
+    RaidRoleIndicator:SetSize(16, 16)
 
+	if screenSide == "left" then
+		RaidRoleIndicator:SetPoint("RIGHT", LeaderIndicator, "LEFT", 0, -4)
+	else
+	    RaidRoleIndicator:SetPoint("LEFT", LeaderIndicator, "RIGHT", 0, -4)
+	end
+
+	local AssistantIndicator = Health:CreateTexture(nil, "ARTWORK", nil, 2)
+    AssistantIndicator:SetSize(16, 16)
+
+	if screenSide == "left" then
+		AssistantIndicator:SetPoint("RIGHT", RaidRoleIndicator, "LEFT", 0, -4)
+	else
+		AssistantIndicator:SetPoint("LEFT", RaidRoleIndicator, "RIGHT", 0, -4)
+	end
+
+	self.LeaderIndicator = LeaderIndicator
+    self.RaidRoleIndicator = RaidRoleIndicator
+	self.AssistantIndicator = AssistantIndicator
 
 
 	--[[	Dispel highlighting
@@ -301,7 +312,6 @@ function SplitLevelFrame(self, unit, screenSide)
 	self.DispelHighlight = DispelHighlight
 
 
-
 	--[[	Raid Marker
 	"Badge" is populated by oUF with the icon for your pvp rank.
 	--]]
@@ -310,7 +320,6 @@ function SplitLevelFrame(self, unit, screenSide)
     RaidTargetIndicator:SetPoint("CENTER", level)
 
     self.RaidTargetIndicator = RaidTargetIndicator
-
 
 
 	--[[	NOW ENTERING. THE PLAYER. ZONE.
@@ -351,7 +360,6 @@ function SplitLevelFrame(self, unit, screenSide)
 		end
 
 
-
 		--[[	PvP/Warmode Icon
 		"Badge" is populated by oUF with the icon for your pvp rank.
 		--]]
@@ -365,7 +373,6 @@ function SplitLevelFrame(self, unit, screenSide)
 
 		PvPIndicator.Badge = Badge
 		self.PvPIndicator = PvPIndicator
-
 
 
 		--[[	Combat and Resting Icons
