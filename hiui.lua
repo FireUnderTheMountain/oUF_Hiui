@@ -422,8 +422,19 @@ function SplitLevelFrame(self, unit, screenSide)
 		combatIndicator.combatIconBg = combatIconBg
 		self.CombatIndicator = combatIndicator
 
-	else -- player
+	else -- not player
 		self.Castbar = Hiui.splitLevel_CastBar(self, this)
+
+		local QuestIndicator = Health:CreateTexture(nil, "ARTWORK")
+		QuestIndicator:SetSize(24, 24)
+
+		if screenSide == "left" then
+			QuestIndicator:SetPoint("RIGHT", name, "LEFT", -1, 0)
+		else
+			QuestIndicator:SetPoint("LEFT", name, "RIGHT", 1, 0)
+		end
+
+		self.QuestIndicator = QuestIndicator
 	end
 end
 
