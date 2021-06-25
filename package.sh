@@ -5,4 +5,4 @@ which zip >/dev/null || exit 3
 
 d="$(date +%F)"
 cd "$(realpath "${0%/*}")"/..
-zip -9 -ru oUF_Hiui-"$d".zip oUF_Hiui -x "oUF_Hiui/textures/testing/*" -x "oUF_Hiui/.git/*" -x "oUF_Hiui/.vscode/*" -x "oUF_Hiui/.gitignore" -x "oUF_Hiui/package.sh"
+zip -9 -ru oUF_Hiui-"$d".zip oUF_Hiui -x "oUF_Hiui/textures/glow.xcf" -x "oUF_Hiui/textures/testing/*" -x "oUF_Hiui/.git/*" -x "oUF_Hiui/.vscode/*" -x "oUF_Hiui/.gitignore" -x "oUF_Hiui/README.md" -x "oUF_Hiui/package.sh"
