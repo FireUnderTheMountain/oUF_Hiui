@@ -123,7 +123,7 @@ function SplitLevelFrame(self, unit, screenSide)
 	end
 	self.VisibleHealthBar = visibleHealthBar
 
-	function Health.PostUpdate(self, unit, cur, max)
+	Health.PostUpdate = function(self, unit, cur, max)
 		local percCur = cur/max
 		local percMissing = 1 - percCur -- %percentage
 		local inset = percMissing * Health:GetWidth()
@@ -777,8 +777,8 @@ local UnitSpecific = {
 local function Shared(self, unit)
 	-- Shared layout code.
 
-	-- self:SetScript("OnEnter", UnitFrame_OnEnter)
-	-- self:SetScript("OnLeave", UnitFrame_OnLeave)
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
+	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
 	-- self:RegisterForClicks("AnyUp")
 
