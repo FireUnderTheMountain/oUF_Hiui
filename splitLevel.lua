@@ -63,16 +63,27 @@ end
 Hiui.splitLevel_CastBar = function(parent, name)
     local t = parent.template
     local u = parent.unit
-    local stdLine = parent.Health:GetHeight()/2
+    --local stdLine = parent.Health:GetHeight()/4
+    local stdLine = 6/60 * parent:GetHeight()
+    local dblLine = stdLine * 2
+    local iconHeight = 26/60 * parent:GetHeight()
 
     local castbar = CreateFrame("StatusBar", name .. "CastBar", parent)
+    castbar:SetFrameLevel(parent.Health:GetFrameLevel() + 1)
+
+    castbar:SetStatusBarTexture([[Interface/AddOns/oUF_Hiui/textures/splitLevel/castbar]])
+    local statusbar = castbar:GetStatusBarTexture()
+
+    if parent.screenSide == "right" then
+        statusbar:SetTexCoord(1, 0, 1, 0)
+    end
 
     --castbar:SetWidth(parent.HealthBg)
     -- MAGIC NUMBERS
-    castbar:SetPoint("TOPLEFT", parent.Health, "TOPLEFT")
-    castbar:SetPoint("TOPRIGHT", parent.Health, "TOPRIGHT")
-    --castbar:SetHeight(parent.Health:GetHeight()/2)
-    castbar:SetHeight(20) -- testing
+    castbar:SetPoint("BOTTOMLEFT", parent.Health, "TOPLEFT")
+    castbar:SetPoint("BOTTOMRIGHT", parent.Health, "TOPRIGHT")
+    castbar:SetHeight(stdLine)
+    --castbar:SetHeight(20) -- testing
 
     local bg = castbar:CreateTexture(nil, "OVERLAY")
     bg:SetAllPoints(castbar)
@@ -81,31 +92,94 @@ Hiui.splitLevel_CastBar = function(parent, name)
 
     -- test values for this section from oUF/elements/castbar.lua
     local spark = castbar:CreateTexture(nil, "OVERLAY")
-    spark:SetSize(20,20)
+    spark:SetSize(dblLine, dblLine)
     spark:SetBlendMode("ADD")
-    spark:SetPoint("CENTER", castbar:GetStatusBarTexture(), "RIGHT")
+    spark:SetPoint("CENTER", statusbar, "RIGHT")
 
     local timer = castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     if parent.screenSide == "left" then
-        timer:SetPoint("TOPLEFT", castbar, "TOP", 0, -2)
+        timer:SetPoint("BOTTOMLEFT", parent.Health, "CENTER", 0, 1)
     else
-        timer:SetPoint("TOPRIGHT", castbar, "TOP", 0, -2)
+        timer:SetPoint("BOTTOMRIGHT", parent.Health, "CENTER", 0, 1)
     end
 
     local spellName = castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     if parent.screenSide == "left" then
-        spellName:SetPoint("BOTTOMLEFT", parent.Health, "BOTTOM", 0, 2)
+        spellName:SetPoint("TOPLEFT", parent.Health, "CENTER", 0, -1)
     else
-        spellName:SetPoint("BOTTOMRIGHT", parent.Health, "BOTTOM", 0, 2)
+        spellName:SetPoint("TOPRIGHT", parent.Health, "CENTER", 0, -1)
     end
 
-    local icon = castbar:CreateTexture(nil, "OVERLAY")
-    icon:SetSize(parent.Health:GetHeight()/2, parent.Health:GetHeight()/2)
+    local shield = castbar:CreateTexture(nil, "OVERLAY")
+    shield:SetTexture([[Interface/AddOns/oUF_Hiui/textures/shieldsmall]]) -- TODO: broke AF
+    --shield:SetSize(dblLine, dblLine)
+    shield:SetSize(iconHeight * 1.5, iconHeight * 3) -- magic number
+    shield:SetPoint("LEFT", castbar, "BOTTOM")
 
-    local shield = castbar:CreateTexture(nil, "OVERLAY") -- not needed.
-    shield:SetSize(stdLine, stdLine) -- testing
-    shield:SetPoint("RIGHT", castbar)
+    local icon = castbar:CreateTexture(nil, "OVERLAY", nil, select(2, shield:GetDrawLayer()) + 1)
+    icon:SetSize(iconHeight, iconHeight)
+    icon:SetPoint("CENTER", shield)
+    -- if parent.screenSide == "Left" then
+    --     icon:SetPoint("LEFT", parent.Health, "BOTTOMRIGHT")
+    -- else
+    --     icon:SetPoint("RIGHT", parent.Health, "BOTTOMLEFT")
+    -- end
+
     -- SafeZone - latency
+
+
+    local function InterruptCheck(self, unit)
+        if UnitCanAttack("player", unit) then -- hostile colors
+            if self.notInterruptible then
+                --print("Enemy cast " .. self.spellID .. " - Not interruptable.") -- neutral colors
+                statusbar:SetVertexColor(69/255, 63/255, 63/255) -- hot gray, non-interruptable enemy
+
+                spellName:SetFontObject("GameFontNormal")   -- smaller since you
+                timer:SetFontObject("GameFontNormal")       -- won't care as much.
+            else
+                --print("Enemy cast " .. self.spellID .. " - Interruptable.")
+                statusbar:SetVertexColor(231/255, 46/255, 35/255) -- interruptable enemy
+
+                spellName:SetFontObject("GameFontNormalLarge")
+                timer:SetFontObject("GameFontNormalLarge")
+            end
+        elseif UnitCanAssist("player", unit) then -- friendly colors
+            --print("Friendly cast - " .. self.spellID)
+            local t = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
+            statusbar:SetVertexColor(t.r, t.g, t.b)
+            -- statusbar:SetVertexColor(220/255, 220/255, 220/255) -- friendly
+
+            spellName:SetFontObject("GameFontNormal")   -- smaller since you
+            timer:SetFontObject("GameFontNormal")       -- won't care as much.
+        else
+            print("NPC(?) cast - " .. self.spellID)
+            statusbar:SetVertexColor(220/255, 220/255, 220/255) -- friendly
+
+            spellName:SetFontObject("GameFontNormal")   -- smaller since you
+            timer:SetFontObject("GameFontNormal")       -- won't care as much.
+        end
+    end
+
+    castbar.PostCastInterruptible = InterruptCheck
+
+    castbar.PostCastStart  = function(self, unit)
+        InterruptCheck(self, unit)
+    end
+    castbar.PostCastUpdate = InterruptCheck
+
+    castbar.PostCastFail = function(self, unit, spellID)
+        --print("Post cast fail.")
+        statusbar:SetVertexColor(231/255, 46/255, 35/255) -- comfort red
+    end
+
+    castbar.PostCastStop = function(self, unit, spellID)
+        --print("Post cast stop.")
+        statusbar:SetVertexColor(69/255, 63/255, 63/255) -- hot gray
+    end
+
+
+    castbar.timeToHold = 1.5
+
 
     castbar.bg = bg
     castbar.Spark = spark
