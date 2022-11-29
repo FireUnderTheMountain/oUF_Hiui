@@ -780,7 +780,8 @@ local function Shared(self, unit)
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-	-- self:RegisterForClicks("AnyUp")
+	-- 9.2.5 fix?
+	self:RegisterForClicks("AnyUp")
 
 	if (UnitSpecific[unit]) then
 		return UnitSpecific[unit](self)
